@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  medusa:
+    build: ./medusa-backend
+    env_file: ./medusa-backend/.env
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+
+  storefront:
+    build: ./pps-sveltekit
+    ports:
+      - "5173:5173"
+    environment:
+      # Example: set public env for SvelteKit if needed
+      # PUBLIC_API_URL: "http://medusa:9000"
+    restart: unless-stopped
