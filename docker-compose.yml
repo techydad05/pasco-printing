@@ -8,11 +8,12 @@ services:
     restart: unless-stopped
 
   storefront:
-    build: ./pps-sveltekit
-    ports:
-      - "5173:5173"
+    build:
+      context: ./pps-sveltekit
     args:
       DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - "5173:5173"
     environment:
       - DATABASE_URL=file:local.db
     restart: unless-stopped
