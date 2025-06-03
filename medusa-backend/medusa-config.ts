@@ -17,7 +17,7 @@ module.exports = defineConfig({
     vite: () => {
       return {
         server: {
-          allowedHosts: ["pascoprintingsolutions.idevsites.com"],
+          allowedHosts: ["idevsites.com"],
         },
       };
     },
