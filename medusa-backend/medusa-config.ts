@@ -17,7 +17,7 @@ module.exports = defineConfig({
     vite: () => {
       return {
         server: {
-          allowedHosts: ["idevsites.com"],
+          allowedHosts: [".idevsites.com"],
         },
       };
     },
