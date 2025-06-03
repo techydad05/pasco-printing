@@ -10,16 +10,16 @@ const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
  * @returns {Record<string, string>}
  */
 function createHeaders() {
-  /** @type {Record<string, string>} */
-  const headers = {
-    'Content-Type': 'application/json',
-  };
+	/** @type {Record<string, string>} */
+	const headers = {
+		'Content-Type': 'application/json'
+	};
 
-  if (PUBLISHABLE_KEY) {
-    headers['x-publishable-key'] = PUBLISHABLE_KEY;
-  }
+	if (PUBLISHABLE_KEY) {
+		headers['x-publishable-api-key'] = PUBLISHABLE_KEY;
+	}
 
-  return headers;
+	return headers;
 }
 
 /**
@@ -55,19 +55,19 @@ function createHeaders() {
  * @returns {Promise<Product[]>}
  */
 export async function fetchProducts() {
-  try {
-    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=12`, {
-      headers: createHeaders()
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return /** @type {Product[]} */ (data.products || []);
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return [];
-  }
+	try {
+		const response = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=12`, {
+			headers: createHeaders()
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return /** @type {Product[]} */ (data.products || []);
+	} catch (error) {
+		console.error('Error fetching products:', error);
+		return [];
+	}
 }
 
 /**
@@ -75,17 +75,17 @@ export async function fetchProducts() {
  * @returns {Promise<Collection[]>}
  */
 export async function fetchCollections() {
-  try {
-    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/collections`, {
-      headers: createHeaders()
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return /** @type {Collection[]} */ (data.collections || []);
-  } catch (error) {
-    console.error('Error fetching collections:', error);
-    return [];
-  }
+	try {
+		const response = await fetch(`${MEDUSA_BACKEND_URL}/store/collections`, {
+			headers: createHeaders()
+		});
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		const data = await response.json();
+		return /** @type {Collection[]} */ (data.collections || []);
+	} catch (error) {
+		console.error('Error fetching collections:', error);
+		return [];
+	}
 }

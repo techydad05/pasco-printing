@@ -28,7 +28,7 @@
     </p>
     <div class="card-actions justify-between items-center mt-4">
       <div class="text-xl font-bold">
-        {#if product.variants[0]?.prices[0]?.amount}
+        {#if product.variants?.length > 0 && product.variants[0]?.prices?.length > 0}
           ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
         {:else}
           Price not available
