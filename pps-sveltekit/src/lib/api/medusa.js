@@ -2,6 +2,26 @@
 
 const MEDUSA_BACKEND_URL = 'http://localhost:9000';
 
+// Get the publishable key from environment variables
+const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
+
+/**
+ * Creates headers for API requests
+ * @returns {Record<string, string>}
+ */
+function createHeaders() {
+  /** @type {Record<string, string>} */
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  if (PUBLISHABLE_KEY) {
+    headers['x-publishable-key'] = PUBLISHABLE_KEY;
+  }
+
+  return headers;
+}
+
 /**
  * @typedef {Object} Price
  * @property {number} amount
@@ -36,7 +56,9 @@ const MEDUSA_BACKEND_URL = 'http://localhost:9000';
  */
 export async function fetchProducts() {
   try {
-    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=12`);
+    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=12`, {
+      headers: createHeaders()
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -54,7 +76,9 @@ export async function fetchProducts() {
  */
 export async function fetchCollections() {
   try {
-    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/collections`);
+    const response = await fetch(`${MEDUSA_BACKEND_URL}/store/collections`, {
+      headers: createHeaders()
+    });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
