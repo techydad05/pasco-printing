@@ -116,9 +116,38 @@
   const saleProducts = $derived(products.slice(2, 6));
 </script>
 
+<svelte:head>
+  <!-- Primary Meta Tags -->
+  <title>Pasco 3D Printing - Custom 3D Printing Services</title>
+  <meta name="title" content="Pasco 3D Printing - Custom 3D Printing Services" />
+  <meta name="description" content="High-quality custom 3D printing services with fast turnaround. From prototypes to small batch production, we bring your ideas to life." />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pasco3dprinting.com/" />
+  <meta property="og:title" content="Pasco 3D Printing - Custom 3D Printing Services" />
+  <meta property="og:description" content="High-quality custom 3D printing services with fast turnaround. From prototypes to small batch production, we bring your ideas to life." />
+  <meta property="og:image" content="https://pasco3dprinting.com/og-image.jpg" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://pasco3dprinting.com/" />
+  <meta property="twitter:title" content="Pasco 3D Printing - Custom 3D Printing Services" />
+  <meta property="twitter:description" content="High-quality custom 3D printing services with fast turnaround. From prototypes to small batch production, we bring your ideas to life." />
+  <meta property="twitter:image" content="https://pasco3dprinting.com/og-image.jpg" />
+  
+  <!-- Apple Mobile Web App Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pasco 3D Printing" />
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#4f46e5" />
+</svelte:head>
+
 <main class="min-h-screen bg-base-100">
   <!-- Hero Carousel -->
-  <div class="carousel w-full h-[70vh] relative">
+  <div class="carousel w-full h-[60vh] md:h-[70vh] relative">
     {#each heroSlides as slide, i (i)}
       <div
         class="carousel-item w-full absolute inset-0 transition-opacity duration-1000 {i === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
@@ -131,9 +160,9 @@
         />
         <div class="absolute inset-0 flex items-center z-20">
           <div class="container mx-auto px-6 text-center md:text-left">
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">{slide.title}</h1>
-            <p class="text-xl md:text-2xl text-white mb-8">{slide.subtitle}</p>
-            <button class="btn btn-{slide.buttonVariant} btn-lg">
+            <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-2 md:mb-4">{slide.title}</h1>
+            <p class="text-lg sm:text-xl md:text-2xl text-white mb-4 md:mb-8">{slide.subtitle}</p>
+            <button class="btn btn-{slide.buttonVariant} btn-sm sm:btn-md md:btn-lg">
               {slide.buttonText}
             </button>
           </div>
@@ -187,72 +216,128 @@
   </section>
 
   <!-- Featured Prints -->
-  <section class="py-16">
+  <section class="py-16 bg-gradient-to-b from-base-100 to-base-200">
     <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold mb-4">Popular 3D Prints</h2>
+      <div class="text-center mb-8">
+        <h2 class="text-4xl font-bold mb-4">Popular 3D Prints</h2>
         <p class="text-lg text-gray-600 max-w-2xl mx-auto">Browse our collection of popular 3D printed items or upload your own design for a custom quote.</p>
       </div>
-        <select
-          class="select select-bordered max-w-xs"
-          bind:value={selectedCollection}
-        >
-          <option value="">All Collections</option>
-          {#each collections as collection (collection.id)}
-            <option value={collection.id}>{collection.title}</option>
-          {/each}
-        </select>
+      
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 px-2 sm:px-0">
+        <div class="stats shadow bg-base-100">
+          <div class="stat">
+            <div class="stat-figure text-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div class="stat-title">Available Products</div>
+            <div class="stat-value text-primary">{products.length}</div>
+            <div class="stat-desc">Ready to ship</div>
+          </div>
+        </div>
+        
+        <div class="join">
+          <div class="join-item">
+            <div class="label-text font-medium px-2">Filter by Collection</div>
+          </div>
+          <select
+            class="select select-bordered join-item"
+            bind:value={selectedCollection}
+          >
+            <option value="">All Collections</option>
+            {#each collections as collection (collection.id)}
+              <option value={collection.id}>{collection.title}</option>
+            {/each}
+          </select>
+        </div>
       </div>
 
       {#if isLoading}
         <div class="flex justify-center py-12">
-          <span class="loading loading-spinner loading-lg"></span>
+          <div class="flex flex-col items-center gap-4">
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+            <span class="text-lg font-medium">Loading amazing products...</span>
+          </div>
         </div>
       {:else if error}
-        <div class="alert alert-error">
+        <div class="alert alert-error shadow-lg max-w-2xl mx-auto">
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <span>{error}</span>
+          <button class="btn btn-sm btn-ghost" on:click={loadProducts}>Try Again</button>
         </div>
       {:else}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {#each filteredProducts as product (product.id)}
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow h-full">
-              <figure class="px-4 pt-4">
-                {#if product.thumbnail}
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    class="rounded-xl h-48 w-full object-cover"
-                  />
-                {:else}
-                  <div class="bg-gray-200 w-full h-48 rounded-xl flex items-center justify-center">
-                    <span class="text-gray-400">No image</span>
-                  </div>
-                {/if}
-              </figure>
-              <div class="card-body">
-                <h3 class="card-title">{product.title}</h3>
-                {#if product.collection}
-                  <div class="badge badge-outline">{product.collection.title}</div>
-                {/if}
-                <div class="mt-4">
-                  {#if product.variants?.[0]?.prices?.[0]?.amount}
-                    <span class="text-xl font-bold">
-                      ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
-                    </span>
+        {#if filteredProducts.length === 0}
+          <div class="alert shadow-lg max-w-2xl mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info shrink-0 w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+              <h3 class="font-bold">No products found</h3>
+              <div class="text-xs">Try selecting a different collection</div>
+            </div>
+            <button class="btn btn-sm btn-ghost" on:click={() => selectedCollection = ''}>Show All</button>
+          </div>
+        {:else}
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+            {#each filteredProducts as product (product.id)}
+              <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] h-full touch-pan-y">
+                <figure class="px-4 pt-4 relative">
+                  {#if product.thumbnail}
+                    <img
+                      src={product.thumbnail}
+                      alt={product.title}
+                      class="rounded-xl h-48 w-full object-cover"
+                      loading="lazy"
+                    />
                   {:else}
-                    <span class="text-gray-500">Price not available</span>
+                    <div class="bg-base-200 w-full h-48 rounded-xl flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-content opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
                   {/if}
-                </div>
-                <div class="card-actions justify-end mt-4">
-                  <button class="btn btn-primary">Add to Cart</button>
+                  {#if product.collection}
+                    <div class="badge badge-secondary absolute top-2 right-2">{product.collection.title}</div>
+                  {/if}
+                </figure>
+                <div class="card-body">
+                  <h3 class="card-title">{product.title}</h3>
+                  <p class="text-sm line-clamp-2">{product.description || 'No description available'}</p>
+                  <div class="flex items-center justify-between mt-4">
+                    {#if product.variants?.[0]?.prices?.[0]?.amount}
+                      <div class="flex items-baseline gap-2">
+                        <span class="text-xl font-bold text-primary">
+                          ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
+                        </span>
+                        <span class="text-xs opacity-70">USD</span>
+                      </div>
+                    {:else}
+                      <span class="text-gray-500">Price not available</span>
+                    {/if}
+                  </div>
+                  <div class="card-actions justify-between items-center mt-4 flex-wrap gap-y-2">
+                    <div class="rating rating-sm">
+                      <input type="radio" name="rating-{product.id}" class="mask mask-star-2 bg-orange-400" checked disabled />
+                      <input type="radio" name="rating-{product.id}" class="mask mask-star-2 bg-orange-400" checked disabled />
+                      <input type="radio" name="rating-{product.id}" class="mask mask-star-2 bg-orange-400" checked disabled />
+                      <input type="radio" name="rating-{product.id}" class="mask mask-star-2 bg-orange-400" checked disabled />
+                      <input type="radio" name="rating-{product.id}" class="mask mask-star-2 bg-orange-400" disabled />
+                    </div>
+                    <button class="btn btn-primary btn-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          {/each}
-        </div>
+            {/each}
+          </div>
+        {/if}
       {/if}
   </section>
 
@@ -260,7 +345,7 @@
   <section class="py-16 bg-base-200">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-12">Our Printing Materials</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body items-center text-center">
             <div class="text-4xl mb-4">🧵</div>
@@ -319,7 +404,7 @@
   <section class="py-16 bg-base-100">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-12">What Our Customers Say</h2>
-      <div class="grid md:grid-cols-3 gap-8">
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
         {#each [
           {
             name: 'James Wilson',
@@ -384,7 +469,7 @@
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
       <p class="text-lg mb-6 max-w-2xl mx-auto">Subscribe to our newsletter for the latest products and exclusive offers.</p>
-      <div class="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
+      <div class="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto px-4 sm:px-0">
         <input
           type="email"
           placeholder="Enter your email"
