@@ -1,7 +1,8 @@
 // @ts-check
 
 // Use environment variable for the backend URL with fallback to localhost for development
-const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://localhost:9001';
+const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+console.log('MEDUSA_BACKEND_URL', MEDUSA_BACKEND_URL);
 
 // Get the publishable key from environment variables
 const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
