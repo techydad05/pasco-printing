@@ -2,7 +2,7 @@ version: "3.8"
 services:
   medusa:
     build: ./medusa-backend
-    env_file: ./medusa-backend/.env
+    # env_file: ./medusa-backend/.env
     ports:
       - "9000:9000"
     restart: unless-stopped
@@ -11,6 +11,6 @@ services:
     build: ./pps-sveltekit
     ports:
       - "5173:5173"
-    environment:
-      PUBLIC_API_URL: "http://localhost:9000"
+    # environment:
+    #   PUBLIC_API_URL: "http://localhost:9000"
     restart: unless-stopped
