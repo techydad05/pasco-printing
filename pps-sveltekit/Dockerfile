@@ -3,8 +3,8 @@ FROM node:20
 WORKDIR /app
 COPY . .
 
-# Make the update-env.sh script executable
-RUN chmod +x update-env.sh
+ARG DATABASE_URL
+ENV DATABASE_URL=file:local.db
 
 RUN npm install
 RUN npm run build

@@ -20,33 +20,11 @@
 console.log('Environment variables available in client:', import.meta.env);
 
 // Use environment variable for the backend URL with fallback to localhost for development
-// In production, this will use the VITE_MEDUSA_BACKEND_URL that was available at BUILD time
-let MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://localhost:9000';
+const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
+console.log('MEDUSA_BACKEND_URL (after fallback logic):', MEDUSA_BACKEND_URL);
 
-// For runtime override in production (if needed)
-// Check if we're in a browser environment
-if (typeof window !== 'undefined') {
-  // Try to get from window.__env if it exists (can be injected at runtime)
-  // @ts-ignore - window.__env is defined in static/env-config.js
-  if (window.__env && window.__env.VITE_MEDUSA_BACKEND_URL) {
-    // @ts-ignore - window.__env is defined in static/env-config.js
-    MEDUSA_BACKEND_URL = window.__env.VITE_MEDUSA_BACKEND_URL;
-  }
-}
-
-console.log('MEDUSA_BACKEND_URL (after all logic):', MEDUSA_BACKEND_URL);
-
-// Get the publishable key from environment variables with similar logic
-let PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
-
-// For runtime override in production (if needed)
-if (typeof window !== 'undefined') {
-  // @ts-ignore - window.__env is defined in static/env-config.js
-  if (window.__env && window.__env.VITE_MEDUSA_PUBLISHABLE_KEY) {
-    // @ts-ignore - window.__env is defined in static/env-config.js
-    PUBLISHABLE_KEY = window.__env.VITE_MEDUSA_PUBLISHABLE_KEY;
-  }
-}
+// Get the publishable key from environment variables
+const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
 
 /**
  * Creates headers for API requests
