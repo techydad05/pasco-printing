@@ -1,26 +1,11 @@
 // @ts-check
 
-// Add type declaration for window.__env
-/**
- * @typedef {Object} EnvConfig
- * @property {string} [VITE_MEDUSA_BACKEND_URL]
- * @property {string} [VITE_MEDUSA_PUBLISHABLE_KEY]
- */
-
-/**
- * @typedef {Object} CustomWindow
- * @property {EnvConfig} [__env]
- */
-
-// In SvelteKit, we need to handle environment variables differently for SSR vs client
-// For client-side, we use import.meta.env
-// For server-side, we would use process.env, but we're focusing on client-side here
-
 // Debug environment variables
-console.log('Environment variables available in client:', import.meta.env);
+console.log('Environment variables available:', import.meta.env);
+console.log('VITE_MEDUSA_BACKEND_URL specifically:', import.meta.env.VITE_MEDUSA_BACKEND_URL);
 
 // Use environment variable for the backend URL with fallback to localhost for development
-const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
+const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://localhost:9000';
 console.log('MEDUSA_BACKEND_URL (after fallback logic):', MEDUSA_BACKEND_URL);
 
 // Get the publishable key from environment variables

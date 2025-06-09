@@ -8,9 +8,10 @@ services:
     restart: unless-stopped
 
   storefront:
-    build: ./pps-sveltekit
-    args:
-      DATABASE_URL: ${DATABASE_URL}
+    build:
+      context: ./pps-sveltekit
+      args:
+        DATABASE_URL: ${DATABASE_URL}
     environment:
       - DATABASE_URL=${DATABASE_URL}
     ports:
