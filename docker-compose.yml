@@ -17,8 +17,8 @@ services:
       context: ./pps-sveltekit
       args:
         DATABASE_URL: ${DATABASE_URL:-file:local.dbb}
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
+    # environment:
+    #   - DATABASE_URL=${DATABASE_URL}
     ports:
       - "5173:5173"
     restart: unless-stopped
