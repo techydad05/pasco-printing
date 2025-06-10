@@ -1,8 +1,13 @@
 version: "3.8"
 services:
   medusa:
-    build: ./medusa-backend
+    build:
+      context: ./medusa-backend
+      args:
+        MEDUSA_DATABASE_URL: ${MEDUSA_DATABASE_URL}
     # env_file: ./medusa-backend/.env
+    environment:
+      - MEDUSA_DATABASE_URL=${MEDUSA_DATABASE_URL}
     ports:
       - "9000:9000"
     restart: unless-stopped
@@ -13,8 +18,7 @@ services:
       args:
         DATABASE_URL: ${DATABASE_URL:-file:local.db}
     environment:
-      - DATABASE_URL=${DATABASE_URL:-file:local.db}
-      - PUBLIC_API_URL=http://192.168.4.138:9000
+      - DATABASE_URL=${DATABASE_URL}
     ports:
       - "5173:5173"
     restart: unless-stopped
