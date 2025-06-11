@@ -1,8 +1,8 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
-import { env } from "process";
+
+console.log("MEDUSA_DATABASE_URL:", process.env.MEDUSA_DATABASE_URL);
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
-console.log("MEDUSA_DATABASE_URL", "testz" + env.MEDUSA_DATABASE_URL);
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.MEDUSA_DATABASE_URL,
