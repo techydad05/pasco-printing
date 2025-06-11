@@ -7,16 +7,12 @@ console.log(import.meta.env);
 const envVars = Object.fromEntries(
 	Object.entries(import.meta.env).map(([key, value]) => [
 		key,
-		key.includes('SECRET') || key.includes('KEY') ? '[REDACTED]' : value
+		key.includes('SECRET') || key.includes('KEY') || key.includes('PUBLIC') ? '[REDACTED]' : value
 	])
 );
 
 // Log all environment variables
 console.log('Available environment variables:', envVars);
-
-// Specifically log VITE_ prefixed variables
-const viteVars = Object.keys(envVars).filter((key) => key.startsWith('VITE_'));
-console.log('VITE_ prefixed variables available:', viteVars);
 
 // Use environment variable for the backend URL with fallback to localhost for development
 const MEDUSA_BACKEND_URL =
