@@ -1,8 +1,7 @@
 // @ts-check
 import dotenv from 'dotenv';
-dotenv.config();
 
-console.log(process.env);
+console.log(import.meta.env);
 
 // Debug environment variables - extract and log all VITE_ prefixed variables
 const envVars = Object.fromEntries(
