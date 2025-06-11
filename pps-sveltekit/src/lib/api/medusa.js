@@ -1,18 +1,4 @@
 // @ts-check
-import dotenv from 'dotenv';
-
-console.log(import.meta.env);
-
-// Debug environment variables - extract and log all VITE_ prefixed variables
-const envVars = Object.fromEntries(
-	Object.entries(import.meta.env).map(([key, value]) => [
-		key,
-		key.includes('SECRET') || key.includes('KEY') || key.includes('PUBLIC') ? '[REDACTED]' : value
-	])
-);
-
-// Log all environment variables
-console.log('Available environment variables:', envVars);
 
 // Use environment variable for the backend URL with fallback to localhost for development
 const MEDUSA_BACKEND_URL =
