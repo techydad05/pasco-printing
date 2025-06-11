@@ -1,6 +1,9 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
+import dotenv from "dotenv";
 
-console.log("MEDUSA_DATABASE_URL:", process.env.MEDUSA_DATABASE_URL);
+dotenv.config();
+
+console.log("MEDUSA_DATABASE_URL:" + process.env.MEDUSA_DATABASE_URL);
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 module.exports = defineConfig({
