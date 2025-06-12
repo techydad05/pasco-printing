@@ -17,6 +17,8 @@ services:
       context: ./pps-sveltekit
       args:
         DATABASE_URL: ${DATABASE_URL:-file:local.dbb}
+        VITE_MEDUSA_PUBLISHABLE_KEY: ${VITE_MEDUSA_PUBLISHABLE_KEY}
+        VITE_MEDUSA_BACKEND_URL: ${VITE_MEDUSA_BACKEND_URL}
     # environment:
     #   - DATABASE_URL=${DATABASE_URL}
     ports:
