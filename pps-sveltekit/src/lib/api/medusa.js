@@ -16,29 +16,8 @@ const viteVars = Object.keys(envVars).filter((key) => key.startsWith('VITE_'));
 console.log('VITE_ prefixed variables available:', viteVars);
 
 // Use environment variable for the backend URL with fallback to localhost for development
-let MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
-
-// Handle SSL protocol issues by ensuring we use the right protocol
-if (typeof window !== 'undefined') {
-	// If we're in the browser
-	const isLocalIP = MEDUSA_BACKEND_URL.includes('192.168.') || 
-		MEDUSA_BACKEND_URL.includes('localhost') || 
-		MEDUSA_BACKEND_URL.includes('127.0.0.1');
-	
-	// For local development, ensure we use HTTP
-	if (isLocalIP && MEDUSA_BACKEND_URL.startsWith('https://')) {
-		MEDUSA_BACKEND_URL = MEDUSA_BACKEND_URL.replace('https://', 'http://');
-		console.log('Switched to HTTP for local development');
-	}
-	
-	// For production (non-local IPs), ensure we use HTTPS if the page is served over HTTPS
-	if (!isLocalIP && window.location.protocol === 'https:' && MEDUSA_BACKEND_URL.startsWith('http://')) {
-		MEDUSA_BACKEND_URL = MEDUSA_BACKEND_URL.replace('http://', 'https://');
-		console.log('Switched to HTTPS for production');
-	}
-}
-
-console.log('MEDUSA_BACKEND_URL (final):', MEDUSA_BACKEND_URL);
+const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
+console.log('MEDUSA_BACKEND_URL:', MEDUSA_BACKEND_URL);
 
 // Get the publishable key from environment variables
 const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
