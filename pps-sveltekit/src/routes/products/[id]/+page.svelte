@@ -96,16 +96,20 @@
     // Try different price structures based on Medusa API response
     
     // 1. Check calculated_price_set structure (based on the actual API response)
-    if (variant.calculated_price_set && variant.calculated_price_set.amount) {
-      const priceSet = variant.calculated_price_set;
-      const amount = priceSet.amount.calculated_amount || priceSet.amount.original_amount;
-      if (amount !== undefined) {
-        return (amount / 100).toFixed(2);
+    if (variant.calculated_price_set?.amount) {
+      // Safely access nested properties
+      const calculatedAmount = variant.calculated_price_set.amount.calculated_amount;
+      const originalAmount = variant.calculated_price_set.amount.original_amount;
+      
+      if (calculatedAmount !== undefined) {
+        return (calculatedAmount / 100).toFixed(2);
+      } else if (originalAmount !== undefined) {
+        return (originalAmount / 100).toFixed(2);
       }
     }
     
     // 2. Check prices array as fallback
-    if (variant.prices && variant.prices.length > 0) {
+    if (variant.prices && variant.prices.length > 0 && variant.prices[0]?.amount !== undefined) {
       return (variant.prices[0].amount / 100).toFixed(2);
     }
 
@@ -216,13 +220,41 @@
 
             <!-- Price -->
             <div class="my-6">
-              {#if product?.variants?.[0]?.prices?.[0]?.amount}
-                <div class="flex items-baseline gap-2">
-                  <span class="text-3xl font-bold text-primary">
-                    ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
-                  </span>
-                  <span class="text-sm opacity-70">USD</span>
-                </div>
+              {#if product && product.variants && product.variants.length > 0}
+                {#if product.variants[0].calculated_price_set?.amount}
+                  <!-- Use calculated_price_set structure -->
+                  <div class="flex items-baseline gap-2">
+                    {#if product.variants[0].calculated_price_set.amount.calculated_amount !== undefined}
+                      <span class="text-3xl font-bold text-primary">
+                        ${(product.variants[0].calculated_price_set.amount.calculated_amount / 100).toFixed(2)}
+                      </span>
+                      <span class="text-sm opacity-70">
+                        {(product.variants[0].calculated_price_set.amount.currency_code || 'USD').toUpperCase()}
+                      </span>
+                    {:else if product.variants[0].calculated_price_set.amount.original_amount !== undefined}
+                      <span class="text-3xl font-bold text-primary">
+                        ${(product.variants[0].calculated_price_set.amount.original_amount / 100).toFixed(2)}
+                      </span>
+                      <span class="text-sm opacity-70">
+                        {(product.variants[0].calculated_price_set.amount.currency_code || 'USD').toUpperCase()}
+                      </span>
+                    {:else}
+                      <span class="text-3xl font-bold text-primary">Price not available</span>
+                    {/if}
+                  </div>
+                {:else if product.variants[0].prices && product.variants[0].prices.length > 0 && product.variants[0].prices[0]?.amount !== undefined}
+                  <!-- Fallback to prices array -->
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-primary">
+                      ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
+                    </span>
+                    <span class="text-sm opacity-70">
+                      {(product.variants[0].prices[0].currency_code || 'USD').toUpperCase()}
+                    </span>
+                  </div>
+                {:else}
+                  <span class="text-3xl font-bold text-primary">Price not available</span>
+                {/if}
               {:else}
                 <span class="text-3xl font-bold text-primary">Price not available</span>
               {/if}

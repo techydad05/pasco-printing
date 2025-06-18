@@ -28,19 +28,17 @@
     </p>
     <div class="card-actions justify-between items-center mt-4">
       <div class="text-xl font-bold">
-        {#if product.variants?.length > 0}
-          {#if product.variants[0].calculated_price_set?.amount}
-            <!-- Use calculated_price_set structure -->
-            ${((product.variants[0].calculated_price_set.amount.calculated_amount || 
-               product.variants[0].calculated_price_set.amount.original_amount) / 100).toFixed(2)}
-          {:else if product.variants[0]?.prices?.length > 0}
-            <!-- Fallback to prices array -->
+        {#if product.variants?.[0]}
+          <!-- Direct access to calculated_price_set.amount structure based on API response -->
+          {#if product.variants[0].calculated_price_set?.amount?.calculated_amount !== undefined}
+            ${(product.variants[0].calculated_price_set.amount.calculated_amount / 100).toFixed(2)}
+          {:else if product.variants[0].calculated_price_set?.amount?.original_amount !== undefined}
+            ${(product.variants[0].calculated_price_set.amount.original_amount / 100).toFixed(2)}
+          {:else if product.variants[0]?.prices?.[0]?.amount !== undefined}
             ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
           {:else if typeof product.variants[0].calculated_price === 'number'}
-            <!-- Fallback to calculated_price -->
             ${(product.variants[0].calculated_price / 100).toFixed(2)}
           {:else if typeof product.variants[0].original_price === 'number'}
-            <!-- Fallback to original_price -->
             ${(product.variants[0].original_price / 100).toFixed(2)}
           {:else}
             Price not available
