@@ -40,17 +40,35 @@ if (PUBLISHABLE_KEY) {
  */
 
 /**
- * Helper function to check for prices in a product
+ * Helper function to extract price information from a product
  * @param {any} product - The product to check for prices
  * @returns {{hasPrices: boolean, priceInfo: {amount: number, currency: string} | null}}
  */
 export function checkProductPrices(product) {
 	if (!product) return { hasPrices: false, priceInfo: null };
 	
-	// Check if product has variants with prices
+	// Check if product has variants
 	if (product.variants && product.variants.length > 0) {
 		for (const variant of product.variants) {
-			// Check for prices array
+			// Check for calculated_price_set structure (based on the actual API response)
+			if (variant.calculated_price_set) {
+				const priceSet = variant.calculated_price_set;
+				if (priceSet.amount) {
+					// Extract the calculated_amount or original_amount
+					const amount = priceSet.amount.calculated_amount || priceSet.amount.original_amount;
+					if (amount !== undefined) {
+						return {
+							hasPrices: true,
+							priceInfo: {
+								amount: amount,
+								currency: priceSet.amount.currency_code || 'USD'
+							}
+						};
+					}
+				}
+			}
+			
+			// Fallback to prices array if available
 			if (variant.prices && variant.prices.length > 0) {
 				return { 
 					hasPrices: true, 
@@ -61,10 +79,9 @@ export function checkProductPrices(product) {
 				};
 			}
 			
-			// Check for direct price properties
+			// Check for direct price properties as last resort
 			if (variant.price || variant.calculated_price) {
 				const amount = variant.price || variant.calculated_price;
-				// Only proceed if amount is not undefined
 				if (amount !== undefined) {
 					return { 
 						hasPrices: true, 

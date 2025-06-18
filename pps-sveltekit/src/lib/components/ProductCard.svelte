@@ -2,7 +2,7 @@
   export let product;
 </script>
 
-<div class="card w-80 bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+<a href="/products/{product.id}" class="card w-80 bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
   <figure class="px-4 pt-4">
     {#if product.thumbnail}
       <img 
@@ -28,8 +28,23 @@
     </p>
     <div class="card-actions justify-between items-center mt-4">
       <div class="text-xl font-bold">
-        {#if product.variants?.length > 0 && product.variants[0]?.prices?.length > 0}
-          ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
+        {#if product.variants?.length > 0}
+          {#if product.variants[0].calculated_price_set?.amount}
+            <!-- Use calculated_price_set structure -->
+            ${((product.variants[0].calculated_price_set.amount.calculated_amount || 
+               product.variants[0].calculated_price_set.amount.original_amount) / 100).toFixed(2)}
+          {:else if product.variants[0]?.prices?.length > 0}
+            <!-- Fallback to prices array -->
+            ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
+          {:else if typeof product.variants[0].calculated_price === 'number'}
+            <!-- Fallback to calculated_price -->
+            ${(product.variants[0].calculated_price / 100).toFixed(2)}
+          {:else if typeof product.variants[0].original_price === 'number'}
+            <!-- Fallback to original_price -->
+            ${(product.variants[0].original_price / 100).toFixed(2)}
+          {:else}
+            Price not available
+          {/if}
         {:else}
           Price not available
         {/if}
@@ -39,4 +54,4 @@
       </button>
     </div>
   </div>
-</div>
+</a>

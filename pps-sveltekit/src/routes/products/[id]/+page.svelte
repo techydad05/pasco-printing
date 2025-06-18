@@ -19,6 +19,13 @@
     prices?: Price[];
     original_price?: number;
     calculated_price?: number;
+    calculated_price_set?: {
+      amount?: {
+        calculated_amount?: number;
+        original_amount?: number;
+        currency_code?: string;
+      }
+    };
   }
 
   interface Collection {
@@ -86,18 +93,28 @@
 
     const variant = prod.variants[0];
 
-    // Try different price structures based on Medusa API
-    // 1. Check prices array first
+    // Try different price structures based on Medusa API response
+    
+    // 1. Check calculated_price_set structure (based on the actual API response)
+    if (variant.calculated_price_set && variant.calculated_price_set.amount) {
+      const priceSet = variant.calculated_price_set;
+      const amount = priceSet.amount.calculated_amount || priceSet.amount.original_amount;
+      if (amount !== undefined) {
+        return (amount / 100).toFixed(2);
+      }
+    }
+    
+    // 2. Check prices array as fallback
     if (variant.prices && variant.prices.length > 0) {
       return (variant.prices[0].amount / 100).toFixed(2);
     }
 
-    // 2. Check calculated_price (used in some Medusa responses)
+    // 3. Check calculated_price (used in some Medusa responses)
     if (typeof variant.calculated_price === 'number') {
       return (variant.calculated_price / 100).toFixed(2);
     }
 
-    // 3. Check original_price (used in some Medusa responses)
+    // 4. Check original_price (used in some Medusa responses)
     if (typeof variant.original_price === 'number') {
       return (variant.original_price / 100).toFixed(2);
     }
