@@ -1,44 +1,24 @@
 // @ts-check
-
-// Debug environment variables - extract and log all VITE_ prefixed variables
-const envVars = Object.fromEntries(
-	Object.entries(import.meta.env).map(([key, value]) => [
-		key,
-		key.includes('SECRET') || key.includes('KEY') ? '[REDACTED]' : value
-	])
-);
-
-// Log all environment variables
-console.log('Available environment variables:', envVars);
-
-// Specifically log VITE_ prefixed variables
-const viteVars = Object.keys(envVars).filter((key) => key.startsWith('VITE_'));
-console.log('VITE_ prefixed variables available:', viteVars);
+import Medusa from '@medusajs/medusa-js';
 
 // Use environment variable for the backend URL with fallback to localhost for development
 const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
-console.log('MEDUSA_BACKEND_URL:', MEDUSA_BACKEND_URL);
 
 // Get the publishable key from environment variables
 const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
-console.log('PUBLISHABLE_KEY available:', !!PUBLISHABLE_KEY);
 
-/**
- * Creates headers for API requests
- * @returns {Record<string, string>}
- */
-function createHeaders() {
-	/** @type {Record<string, string>} */
-	const headers = {
-		'Content-Type': 'application/json'
-	};
+// Initialize Medusa client with proper configuration
+const medusaClient = new Medusa({ 
+  baseUrl: MEDUSA_BACKEND_URL, 
+  maxRetries: 3
+});
 
-	if (PUBLISHABLE_KEY) {
-		headers['x-publishable-api-key'] = PUBLISHABLE_KEY;
-	}
-
-	return headers;
+// If we have a publishable key, set it on the client
+if (PUBLISHABLE_KEY) {
+  medusaClient.setPublishableKey(PUBLISHABLE_KEY);
 }
+
+// Helper functions for price formatting can be added here if needed
 
 /**
  * @typedef {Object} Price
@@ -70,18 +50,13 @@ function createHeaders() {
 
 /**
  * Fetches products from the Medusa API
- * @returns {Promise<Product[]>}
+ * @returns {Promise<any[]>}
  */
 export async function fetchProducts() {
 	try {
-		const response = await fetch(`${MEDUSA_BACKEND_URL}/store/products?limit=12`, {
-			headers: createHeaders()
-		});
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const data = await response.json();
-		return /** @type {Product[]} */ (data.products || []);
+		// Use the correct API call format for the medusa-js client
+		const { products } = await medusaClient.products.list();
+		return products || [];
 	} catch (error) {
 		console.error('Error fetching products:', error);
 		return [];
@@ -90,20 +65,29 @@ export async function fetchProducts() {
 
 /**
  * Fetches collections from the Medusa API
- * @returns {Promise<Collection[]>}
+ * @returns {Promise<any[]>}
  */
 export async function fetchCollections() {
 	try {
-		const response = await fetch(`${MEDUSA_BACKEND_URL}/store/collections`, {
-			headers: createHeaders()
-		});
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-		const data = await response.json();
-		return /** @type {Collection[]} */ (data.collections || []);
+		const { collections } = await medusaClient.collections.list();
+		return collections || [];
 	} catch (error) {
 		console.error('Error fetching collections:', error);
 		return [];
+	}
+}
+
+/**
+ * Fetch a single product by its ID
+ * @param {string} id - The product ID
+ * @returns {Promise<any|null>}
+ */
+export async function fetchProductById(id) {
+	try {
+		const { product } = await medusaClient.products.retrieve(id);
+		return product || null;
+	} catch (error) {
+		console.error(`Error fetching product ${id}:`, error);
+		return null;
 	}
 }
