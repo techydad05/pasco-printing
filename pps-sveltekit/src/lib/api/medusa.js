@@ -1,5 +1,4 @@
 // @ts-check
-import Medusa from '@medusajs/medusa-js';
 
 // Use environment variable for the backend URL with fallback to localhost for development
 const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://192.168.4.138:9000';
@@ -7,15 +6,41 @@ const MEDUSA_BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL || 'http://19
 // Get the publishable key from environment variables
 const PUBLISHABLE_KEY = import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY || '';
 
-// Initialize Medusa client with proper configuration
-const medusaClient = new Medusa({
-	baseUrl: MEDUSA_BACKEND_URL,
-	maxRetries: 3
-});
+/**
+ * @typedef {import('@medusajs/medusa-js').default} MedusaClient
+ */
 
-// If we have a publishable key, set it on the client
-if (PUBLISHABLE_KEY) {
-	medusaClient.setPublishableKey(PUBLISHABLE_KEY);
+// Initialize Medusa client with proper configuration
+// Using dynamic import to ensure it works in both development and production
+/** @type {MedusaClient|null} */
+let medusaClient = null;
+
+/**
+ * Function to initialize the Medusa client
+ * @returns {Promise<MedusaClient>} The initialized Medusa client
+ */
+async function initMedusaClient() {
+	if (!medusaClient) {
+		try {
+			// Dynamically import the Medusa client
+			const Medusa = (await import('@medusajs/medusa-js')).default;
+			
+			// Create a new client instance
+			medusaClient = new Medusa({
+				baseUrl: MEDUSA_BACKEND_URL,
+				maxRetries: 3
+			});
+			
+			// If we have a publishable key, set it on the client
+			if (PUBLISHABLE_KEY) {
+				medusaClient.setPublishableKey(PUBLISHABLE_KEY);
+			}
+		} catch (error) {
+			console.error('Failed to initialize Medusa client:', error);
+			throw error;
+		}
+	}
+	return medusaClient;
 }
 
 /**
@@ -104,8 +129,11 @@ export function checkProductPrices(product) {
  */
 export async function fetchProducts() {
 	try {
+		// Initialize the Medusa client before using it
+		const client = await initMedusaClient();
+		
 		// Use the correct API call format for the medusa-js client with region ID
-		const { products } = await medusaClient.products.list({
+		const { products } = await client.products.list({
 			region_id: 'reg_01JXZM573HHVG3EKVVZCTNSE38'
 		});
 		
@@ -126,9 +154,16 @@ export async function fetchProducts() {
 	}
 }
 
+/**
+ * Fetches collections from the Medusa API
+ * @returns {Promise<any[]>}
+ */
 export async function fetchCollections() {
 	try {
-		const { collections } = await medusaClient.collections.list();
+		// Initialize the Medusa client before using it
+		const client = await initMedusaClient();
+		
+		const { collections } = await client.collections.list();
 		return collections || [];
 	} catch (error) {
 		console.error('Error fetching collections:', error);
@@ -143,7 +178,10 @@ export async function fetchCollections() {
  */
 export async function fetchProductById(id) {
 	try {
-		const { product } = await medusaClient.products.retrieve(id);
+		// Initialize the Medusa client before using it
+		const client = await initMedusaClient();
+		
+		const { product } = await client.products.retrieve(id);
 		return product || null;
 	} catch (error) {
 		console.error(`Error fetching product ${id}:`, error);
