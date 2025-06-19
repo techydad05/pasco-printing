@@ -50,11 +50,19 @@ async function initMedusaClient() {
  */
 
 /**
+ * @typedef {Object} PriceSet
+ * @property {Object} [amount]
+ * @property {number} [amount.calculated_amount]
+ * @property {number} [amount.original_amount]
+ * @property {string} [amount.currency_code]
+ */
+
+/**
  * @typedef {Object} Variant
  * @property {string} [id]
- * @property {Price[]} [prices]
- * @property {number} [price]
+ * @property {Array<any>} [prices]
  * @property {number} [calculated_price]
+ * @property {PriceSet} [calculated_price_set]
  */
 
 /**
@@ -144,6 +152,23 @@ export async function fetchProducts() {
 			console.log('First product has prices:', priceCheck.hasPrices);
 			if (priceCheck.priceInfo) {
 				console.log('Price info:', priceCheck.priceInfo.amount / 100, priceCheck.priceInfo.currency);
+			}
+			
+			// Add more detailed logging for testing
+			if (products[0].variants && products[0].variants.length > 0) {
+				const firstVariant = products[0].variants[0];
+				console.log('First product variant data:', JSON.stringify(firstVariant, null, 2));
+				
+				// Log specific price structures
+				if (firstVariant.calculated_price_set) {
+					console.log('Price structure (calculated_price_set):', 
+						JSON.stringify(firstVariant.calculated_price_set, null, 2));
+				}
+				
+				if (firstVariant.prices) {
+					console.log('Price structure (prices array):', 
+						JSON.stringify(firstVariant.prices, null, 2));
+				}
 			}
 		}
 		

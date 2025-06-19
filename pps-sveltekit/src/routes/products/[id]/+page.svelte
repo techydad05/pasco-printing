@@ -61,7 +61,27 @@
       isLoading = true;
       error = null;
       product = await fetchProductById(productId);
-
+      
+      // Add detailed logging for testing
+      if (product) {
+        console.log('Product data:', JSON.stringify(product, null, 2));
+        
+        if (product.variants && product.variants.length > 0) {
+          console.log('First variant:', JSON.stringify(product.variants[0], null, 2));
+          
+          // Log price information specifically
+          if (product.variants[0].calculated_price_set) {
+            console.log('Price structure (calculated_price_set):', 
+              JSON.stringify(product.variants[0].calculated_price_set, null, 2));
+          }
+          
+          if (product.variants[0].prices) {
+            console.log('Price structure (prices array):', 
+              JSON.stringify(product.variants[0].prices, null, 2));
+          }
+        }
+      }
+      
       if (!product) {
         error = 'Product not found';
         return;
