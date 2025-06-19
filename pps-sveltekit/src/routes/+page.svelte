@@ -334,6 +334,7 @@
                     </button>
                   </div>
                 </div>
+                <a href="/products/{product.id}" class="absolute inset-0" aria-label="View {product.title} details"></a>
               </div>
             {/each}
           </div>

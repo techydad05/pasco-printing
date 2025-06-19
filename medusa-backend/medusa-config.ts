@@ -10,7 +10,10 @@ loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
   projectConfig: {
+    // Add SSL configuration to the database URL if using PostgreSQL
     databaseUrl: process.env.MEDUSA_DATABASE_URL,
+    // SSL configuration is typically part of the connection string for PostgreSQL
+    // e.g., postgres://user:password@host:port/database?sslmode=require
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
