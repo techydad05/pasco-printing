@@ -307,13 +307,25 @@
                   <h3 class="card-title">{product.title}</h3>
                   <p class="text-sm line-clamp-2">{product.description || 'No description available'}</p>
                   <div class="flex items-center justify-between mt-4">
-                    {#if product.variants?.[0]?.prices?.[0]?.amount}
-                      <div class="flex items-baseline gap-2">
-                        <span class="text-xl font-bold text-primary">
-                          ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
-                        </span>
-                        <span class="text-xs opacity-70">USD</span>
-                      </div>
+                    {#if product.variants?.length > 0}
+                      {@const v = product.variants[0]}
+                      {@const rawPrice =
+                        v.prices?.[0]?.amount ??
+                        (typeof v.calculated_price === 'number'
+                          ? v.calculated_price
+                          : (typeof v.calculated_price === 'object' && v.calculated_price?.calculated_amount)
+                              ? v.calculated_price.calculated_amount
+                              : v.original_price)}
+                      {#if typeof rawPrice === 'number'}
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-xl font-bold text-primary">
+                            ${(rawPrice >= 100 ? rawPrice / 100 : rawPrice).toFixed(2)}
+                          </span>
+                          <span class="text-xs opacity-70">USD</span>
+                        </div>
+                      {:else}
+                        <span class="text-gray-500">Price not available</span>
+                      {/if}
                     {:else}
                       <span class="text-gray-500">Price not available</span>
                     {/if}

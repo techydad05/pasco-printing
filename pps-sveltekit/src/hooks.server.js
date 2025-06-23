@@ -22,4 +22,18 @@ const handleAuth = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = handleAuth;
+export async function handle({ event, resolve }) {
+  console.log('Handling request:', event.url.pathname);
+  
+  try {
+    const response = await handleAuth({ event, resolve });
+    console.log('Response status:', response.status);
+    return response;
+  } catch (error) {
+    console.error('Server error:', error);
+    if (error instanceof Error) {
+      console.error(error.stack);
+    }
+    return new Response('Internal Server Error', { status: 500 });
+  }
+}

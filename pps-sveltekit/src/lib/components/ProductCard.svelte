@@ -1,5 +1,17 @@
-<script>
-  export let product;
+<script lang="ts">
+  import { addItem } from '$lib/api/cartService';
+  import { drawerOpen } from '$lib/stores/cartStore';
+  export let product: any;
+
+  function handleAddToCart(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    const variantId = product?.variants?.[0]?.id;
+    if (variantId) {
+      addItem(variantId, 1);
+      drawerOpen.set(true);
+    }
+  }
 </script>
 
 <a href="/products/{product.id}" class="card w-80 bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
@@ -28,18 +40,17 @@
     </p>
     <div class="card-actions justify-between items-center mt-4">
       <div class="text-xl font-bold">
-        {#if product.variants?.[0]}
-          <!-- Direct access to calculated_price_set.amount structure based on API response -->
-          {#if product.variants[0].calculated_price_set?.amount?.calculated_amount !== undefined}
-            ${(product.variants[0].calculated_price_set.amount.calculated_amount / 100).toFixed(2)}
-          {:else if product.variants[0].calculated_price_set?.amount?.original_amount !== undefined}
-            ${(product.variants[0].calculated_price_set.amount.original_amount / 100).toFixed(2)}
-          {:else if product.variants[0]?.prices?.[0]?.amount !== undefined}
-            ${(product.variants[0].prices[0].amount / 100).toFixed(2)}
-          {:else if typeof product.variants[0].calculated_price === 'number'}
-            ${(product.variants[0].calculated_price / 100).toFixed(2)}
-          {:else if typeof product.variants[0].original_price === 'number'}
-            ${(product.variants[0].original_price / 100).toFixed(2)}
+        {#if product.variants?.length > 0}
+          {@const v = product.variants[0]}
+          {@const rawPrice =
+            v.prices?.[0]?.amount ??
+            (typeof v.calculated_price === 'number'
+              ? v.calculated_price
+              : (typeof v.calculated_price === 'object' && v.calculated_price?.calculated_amount)
+                  ? v.calculated_price.calculated_amount
+                  : v.original_price)}
+          {#if typeof rawPrice === 'number'}
+            ${(rawPrice >= 100 ? rawPrice / 100 : rawPrice).toFixed(2)}
           {:else}
             Price not available
           {/if}
@@ -47,7 +58,7 @@
           Price not available
         {/if}
       </div>
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" on:click={handleAddToCart}>
         Add to cart
       </button>
     </div>
